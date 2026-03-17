@@ -1,14 +1,14 @@
 import { z } from 'zod'
 
-const origin = z.url().refine((value) => {
-  const url = new URL(value)
-  return ['http:', 'https:'].includes(url.protocol) && url.origin === value
+const origin = z.string().refine((value) => {
+  const url = URL.parse(value)
+  return url !== null && ['http:', 'https:'].includes(url.protocol) && url.origin === value
 }, 'Use an HTTP(S) origin with no trailing slash or path')
 
 const envSchema = z.object({
   HOST: z.string().min(1).default('127.0.0.1'),
   PORT: z.coerce.number().int().min(1).max(65535).default(4000),
-  CLIENT_ORIGINS: z.string().default('http://localhost:5173,http://127.0.0.1:5173')
+  CLIENT_ORIGINS: z.string().default('http://localhost:5174,http://127.0.0.1:5174')
     .transform((value) => value.split(',').map((item) => item.trim()).filter(Boolean))
     .pipe(z.array(origin).min(1)),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
