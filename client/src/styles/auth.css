@@ -33,3 +33,13 @@
 @media (max-width: 480px) {
   .auth-header { padding: 16px 18px; }
 }
+
+.auth-card input { min-height: 46px; font-size: 1rem; border-color: #6e6480; }
+:root[data-theme="light"] .auth-card input { border-color: #8c819d; }
+.auth-card input[aria-invalid="true"] { border-color: var(--rose); }
+.auth-card .password-wrap button { width: 44px; height: 44px; top: 1px; right: 1px; }
+.auth-card .password-wrap input { padding-right: 50px; }
+.auth-hint { color: var(--muted); font-size: .83rem; }
+.auth-error, .auth-error svg { color: var(--rose); }
+.auth-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.auth-preview .button { margin-top: 6px; }

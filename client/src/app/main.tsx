@@ -11,6 +11,9 @@ import { useEffect } from 'react'
 
 const Landing = lazy(() => import('@/features/landing/landing'))
 const Auth = lazy(() => import('@/features/auth/auth'))
+const AuthRoutes = lazy(() => import('@/features/auth/session').then((module) => ({ default: module.AuthRoutes })))
+const AuthCallback = lazy(() => import('@/features/auth/callback'))
+const Account = lazy(() => import('@/features/auth/account'))
 const Demo = lazy(() => import('@/features/demo/demo'))
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1, staleTime: 30_000 } } })
@@ -43,10 +46,15 @@ function Application() {
         <Suspense fallback={<div className="loading-page" role="status" aria-label="Loading LumaLedger"><span /><span /><span /></div>}>
           <Routes>
             <Route index element={<Landing />} />
-            <Route path="login" element={<Auth mode="login" />} />
-            <Route path="register" element={<Auth mode="register" />} />
-            <Route path="forgot-password" element={<Auth mode="forgot" />} />
-            <Route path="reset-password" element={<Auth mode="reset" />} />
+            <Route element={<AuthRoutes />}>
+              <Route path="login" element={<Auth mode="login" />} />
+              <Route path="register" element={<Auth mode="register" />} />
+              <Route path="forgot-password" element={<Auth mode="forgot" />} />
+              <Route path="reset-password" element={<Auth mode="reset" />} />
+              <Route path="auth/confirm" element={<AuthCallback recovery={false} />} />
+              <Route path="auth/recovery" element={<AuthCallback recovery />} />
+              <Route path="app" element={<Account />} />
+            </Route>
             <Route path="demo/*" element={<Demo />} />
             <Route path="*" element={<main className="message-screen"><h1>Page not found</h1><Link className="button button-primary button-md" to="/">Back to home</Link></main>} />
           </Routes>

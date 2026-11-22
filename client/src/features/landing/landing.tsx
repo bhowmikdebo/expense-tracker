@@ -19,7 +19,7 @@ const questions = [
   ['Does LumaLedger connect to my bank?', 'The initial product is designed for manual entry. It does not ask for bank login credentials or claim to sync accounts.'],
   ['Will AI make changes to my ledger?', 'The planned AI features suggest categories and receipt fields for you to review. You choose what gets saved.'],
   ['Can I use my own currency?', 'The initial account design uses one base currency, with INR as the default. The dashboard preview is shown in INR.'],
-  ['Can I create a live account now?', 'This release is a local product preview. Live sign-in and private account storage are part of the next phase.'],
+  ['How do I create an account?', 'Enter your name, email, and a password, then follow the confirmation link in your inbox. You can explore the sample dashboard while you wait.'],
 ]
 
 export default function Landing() {

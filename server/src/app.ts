@@ -7,9 +7,11 @@ import pino from 'pino'
 import { pinoHttp } from 'pino-http'
 import type { Config } from './config/env.js'
 import { handleError, HttpError, notFound } from './middleware/errors.js'
+import { createAuthRouter } from './routes/auth.js'
+import { createClientRouter } from './routes/client.js'
 import { healthRouter } from './routes/health.js'
 
-export function createApp(config: Config) {
+export function createApp(config: Config, request: typeof fetch = fetch) {
   const app = express()
   app.disable('x-powered-by')
   app.set('trust proxy', config.TRUST_PROXY_HOPS || false)
@@ -28,7 +30,14 @@ export function createApp(config: Config) {
     },
     quietReqLogger: true,
   }))
-  app.use(helmet())
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        connectSrc: ["'self'", ...(config.SUPABASE_URL ? [config.SUPABASE_URL] : [])],
+        upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
+      },
+    },
+  }))
   app.use(cors({
     origin: (origin, done) => {
       if (!origin) return done(null, false)
@@ -46,6 +55,9 @@ export function createApp(config: Config) {
   })
   app.use('/api', healthRouter)
   app.use('/api', limiter, express.json({ limit: '32kb' }))
+  app.use('/api/auth', createAuthRouter(config, request))
+  app.use('/api', notFound)
+  if (config.SERVE_CLIENT) app.use(createClientRouter())
   app.use(notFound)
   app.use(handleError)
   return app
