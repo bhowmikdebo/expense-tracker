@@ -11,6 +11,7 @@ const envSchema = z.object({
   CLIENT_ORIGINS: z.string().default('http://localhost:5174,http://127.0.0.1:5174')
     .transform((value) => value.split(',').map((item) => item.trim()).filter(Boolean))
     .pipe(z.array(origin).min(1)),
+  RENDER_EXTERNAL_URL: z.union([z.literal(''), origin]).default(''),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
   TRUST_PROXY_HOPS: z.coerce.number().int().min(0).max(10).default(0),
   SERVE_CLIENT: z.enum(['true', 'false']).default('false').transform((value) => value === 'true'),

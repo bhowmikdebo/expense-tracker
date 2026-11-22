@@ -23,6 +23,13 @@ test('only configured browser origins receive CORS permission', async () => {
   assert.equal(denied.headers['access-control-allow-origin'], undefined)
 })
 
+test('Render’s provisioned origin can access the hosted API', async () => {
+  const origin = 'https://preview-app.onrender.com'
+  const config = readConfig({ LOG_LEVEL: 'silent', RENDER_EXTERNAL_URL: origin })
+  await request(createApp(config)).get('/api/health').set('Origin', origin)
+    .expect('Access-Control-Allow-Origin', origin).expect(200)
+})
+
 test('unknown routes and malformed JSON use the API error envelope', async () => {
   const missing = await request(app).get('/api/missing').expect(404)
   assert.equal(missing.body.error.code, 'NOT_FOUND')

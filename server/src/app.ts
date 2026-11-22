@@ -38,10 +38,10 @@ export function createApp(config: Config, request: typeof fetch = fetch) {
       },
     },
   }))
-  app.use(cors({
+  app.use('/api', cors({
     origin: (origin, done) => {
       if (!origin) return done(null, false)
-      if (config.CLIENT_ORIGINS.includes(origin)) return done(null, true)
+      if (config.CLIENT_ORIGINS.includes(origin) || config.RENDER_EXTERNAL_URL === origin) return done(null, true)
       done(new HttpError(403, 'ORIGIN_DENIED', 'This origin cannot access the API.'))
     },
     methods: ['GET', 'HEAD', 'OPTIONS'],
